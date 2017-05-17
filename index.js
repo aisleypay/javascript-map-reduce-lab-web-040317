@@ -9000,3 +9000,54 @@ const issues = [
     "url": "https://api.github.com/repos/learn-co-curriculum/js-donut-lab/issues/2"
   }
 ];
+
+const issuesWithUpdatedApiUrl = issues.map(function(issue) {
+
+  return Object.assign({}, issue, {
+    body: issue.body,
+    created_at: issue.created_at,
+    comments_count: issue.comments_count,
+    id: issue.id,
+    number: issue.number,
+    state: issue.state,
+    url: issue.url.replace(/api.github.com/i, 'api-v2.github.com')
+  })
+})
+
+const commentCountAcrossIssues = issues.reduce(function(count, issue) {
+  return count += issue.comments_count
+}, 0)
+
+const openIssues = issues.filter(function(issue) {
+ if (issue.state === 'open') {
+    return issue
+  }
+})
+
+const nonAutomaticIssues = issues.filter(function(issue) {
+  if (!issue.body.includes('automatically created by learn.co')) {
+    return issue
+  }
+})
+
+function createTable(nonAutomaticIssues) {
+  const tableBody = document.getElementById("results")
+
+  nonAutomaticIssues.map(function(row) {
+    let newRow = document.createElement('tr')
+    tableBody.appendChild(newRow)
+
+    let body = document.createElement('td')
+    body.textContent = row.body
+    let date = document.createElement('td')
+    date.textContent = row.created_at
+    let state = document.createElement('td')
+    state.textContent = row.state
+
+    newRow.appendChild(body)
+    newRow.appendChild(date)
+    newRow.appendChild(state)
+  })
+}
+
+createTable(nonAutomaticIssues);
